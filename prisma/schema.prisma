@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String        @id @default(uuid())
+  email           String        @unique
+  phone           String
+  password        String?
+  created_at      DateTime      @default(now())
+  is_email_verified Boolean       @default(false)
+  is_phone_verified Boolean       @default(false)
+  organizations   UserOrganizations[]
+  organization_owner Organization? @relation("OrganizationOwner")
+  default_organization Organization? @relation("DefaultOrganization", fields: [default_organization_id], references: [id])
+  default_organization_id String?
+}
+
+model EmailOTP {
+  id         String   @id @default(uuid())
+  email      String
+  otp        String
+  created_at DateTime @default(now())
+  expires_at DateTime @default(dbgenerated("now() + interval '10 minutes'"))
+}
+
+model Organization {
+  id       String @id @default(uuid())
+  name     String
+  is_discoverable Boolean
+  mobile   String?
+  phone    String?
+  fax      String?
+  website  String?
+  street   String?
+  city     String?
+  state    String?
+  pin_code String?
+  country  String?
+  language String?
+  timezone String?
+  created_at DateTime @default(now())
+  owner    User   @relation("OrganizationOwner", fields: [owner_id], references: [id])
+  owner_id String @unique
+  users   UserOrganizations[]
+  organization_invites OrganizationInvite[]
+  user_default User[] @relation("DefaultOrganization")
+}
+
+model OrganizationInvite {
+  id         String   @id @default(uuid())
+  email      String
+  first_name String
+  created_at DateTime @default(now())
+  organization    Organization @relation(fields: [organization_id], references: [id])
+  organization_id String
+}
+
+model UserOrganizations {
+  user       User     @relation(fields: [user_id], references: [id])
+  user_id     String
+  organization   Organization @relation(fields: [organization_id], references: [id])
+  organization_id String
+  joined_at DateTime @default(now())
+
+  @@id([user_id, organization_id])
+}
+
+enum Status {
+  AVAILABLE
+  AWAY
+  BUSY
+  INVISIBLE
+}
