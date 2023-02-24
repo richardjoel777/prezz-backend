@@ -8,22 +8,10 @@ import getProfile from "./getProfile.js";
 import checkEmailExists from "./checkEmailExists.js";
 import checkValidOTP from "./checkValidOTP.js";
 import loginWithOTP from "./loginWithOTP.js";
-import jwt from "jsonwebtoken";
+import loginUser from "./loginUser.js";
+import googleSignIn from "./googleSignIn.js";
 
-export const loginUser = async (req, res, id) => {
-    const token = jwt.sign({ id }, process.env.JWT_SECRET, {
-        expiresIn: "10d",
-    });
-    res
-        // .setCookie("token", token, {
-        //     path: "/",
-        // })
-        // .header("Authorization", `Bearer ${token}`)
-        .code(200)
-        .send({ token, message: "Login Successful" });
-};
-
-export default {
+export {
     register,
     login,
     getEmailOTP,
@@ -33,5 +21,7 @@ export default {
     getProfile,
     checkEmailExists,
     checkValidOTP,
-    loginWithOTP
+    loginWithOTP,
+    googleSignIn,
+    loginUser,
 }

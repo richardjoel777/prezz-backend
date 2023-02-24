@@ -7,4 +7,6 @@ admin.initializeApp({
     credential: admin.credential.cert(gooogleAppCred)
 });
 
+export { admin }
+
 export default admin.messaging()

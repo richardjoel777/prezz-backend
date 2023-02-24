@@ -61,6 +61,11 @@ export default async (socket, io, data) => {
             })
             // console.log("RECEIVER SET", messageData.receiver)
         }
+        else {
+            messageData.channel = await mongoose.channel.findOne({
+                _id: Mongoose.Types.ObjectId(chat_id)
+            })
+        }
 
         if (data.files) {
             const files = data.files.map(async (file) => {

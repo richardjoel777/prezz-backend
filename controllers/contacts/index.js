@@ -6,7 +6,7 @@ import getInvites from "./getInvites.js";
 import createInvite from "./createInvite.js";
 
 
-export default {
+export {
     getContacts,
     removeContact,
     acceptInvite,

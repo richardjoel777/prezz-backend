@@ -1,11 +1,10 @@
 import auth from "../middlewares/auth.js";
-import searchControllers from "../controllers/search/index.js";
 
-const {
+import {
     channel,
     media,
     message,
-} = searchControllers;
+} from "../controllers/search/index.js"
 
 export default async (fastify, opts, done) => {
     fastify.post("/channel", { preHandler: [auth], handler: channel });

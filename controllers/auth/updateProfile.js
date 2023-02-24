@@ -6,11 +6,7 @@ export default async (req, res) => {
     const id = req.userId;
     try {
 
-        if (!req.body.data) {
-            req.body.data = JSON.stringify({})
-        }
-
-        const data = JSON.parse(req.body.data);
+        const data = req.body.data ? JSON.parse(req.body.data) : {};
 
         console.log("[DATA]", data);
 

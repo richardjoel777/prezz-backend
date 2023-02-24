@@ -5,13 +5,15 @@ import getChatUser from "./getChatUser.js";
 import getPinnedChats from "./getPinnedChats.js";
 import getConversations from "./getConversations.js";
 import getProfileandLastMessage from "./getProfileandLastMessage.js";
+import getConversationHistory from "./getConversationHistory.js";
 
-export default {
+export {
     getFiles,
     getSentMessages,
     getUnreadCount,
     getChatUser,
     getPinnedChats,
     getConversations,
-    getProfileandLastMessage
+    getProfileandLastMessage,
+    getConversationHistory,
 };

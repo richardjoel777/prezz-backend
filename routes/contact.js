@@ -1,14 +1,13 @@
-import contactsController from "../controllers/contacts/index.js";
 import auth from "../middlewares/auth.js";
 
-const {
+import {
     acceptInvite,
     createInvite,
     declineInvite,
     getContacts,
     getInvites,
     removeContact
-} = contactsController;
+} from "../controllers/contacts/index.js"
 
 export default async (fastify, opts, done) => {
     fastify.post("/accept", { preHandler: auth }, acceptInvite);

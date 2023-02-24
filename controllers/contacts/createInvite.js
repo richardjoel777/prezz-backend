@@ -7,9 +7,7 @@ export default async (req, res) => {
             user_id: req.userId
         });
         if (!sender) {
-            return res.code(404).send({
-                error: "User not found"
-            });
+            throw new Error({ status: 404, message: "User not found" });
         }
 
         const receiver = await mongoose.user.findOne({
@@ -17,9 +15,7 @@ export default async (req, res) => {
         });
 
         if (!receiver) {
-            return res.code(404).send({
-                error: "User not found"
-            })
+            throw new Error({ status: 404, message: "User not found" });
         }
 
         const contactInvite = await mongoose.contactInvite.findOne({
@@ -29,9 +25,7 @@ export default async (req, res) => {
         });
 
         if (contactInvite) {
-            return res.code(400).send({
-                error: "Contact invite already sent"
-            });
+            throw new Error({ status: 400, message: "Contact Invite already exists" });
         }
 
         const newContactInvite = new mongoose.contactInvite({
@@ -48,8 +42,15 @@ export default async (req, res) => {
         });
     }
     catch (err) {
+
+        if (err.status) {
+            return res.code(err.status).send({
+                message: err.message
+            });
+        }
+
         res.code(500).send({
-            message: "Server Error"
+            message: "Internal Server Error"
         });
     }
 }

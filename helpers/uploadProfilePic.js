@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from "uuid";
 
 export default async (file) => {
     const { mimetype, buffer, size } = file;
-    const key = uuidv4();
+    const key = `profile/${uuidv4()}`;
     const params = {
         Bucket: process.env.BUCKET_NAME,
         Key: key,

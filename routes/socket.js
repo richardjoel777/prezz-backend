@@ -1,7 +1,6 @@
-import listeners from '../listeners/index.js'
 import { io, SOCKET_USERS } from '../server.js'
 
-const {
+import {
     handleConnection,
     createMessage,
     fetchMessages,
@@ -16,7 +15,7 @@ const {
     addPinnedChat,
     removePinnedChat,
     // unreactMessage
-} = listeners
+} from '../listeners/index.js'
 
 export default async (socket) => {
 

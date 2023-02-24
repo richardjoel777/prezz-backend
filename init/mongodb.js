@@ -15,3 +15,5 @@ export default async function () {
         process.exit(1);
     }
 }
+
+export const conn = mongoose.connection;

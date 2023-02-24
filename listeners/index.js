@@ -12,29 +12,11 @@ import sendNotification from "./sendNotification.js"
 import addPinnedChat from "./addPinnedChat.js"
 import removePinnedChat from "./removePinnedChat.js"
 
-export default {
-    handleConnection,
-    createMessage,
-    fetchMessages,
-    deleteMessage,
-    editMessage,
-    reactMessage,
-    readMessage,
-    editPermissions,
-    pinMessage,
-    unpinMessage,
-    sendNotification,
-    addPinnedChat,
-    removePinnedChat,
-}
-
-export const addReactions = (messages) => {
-    const messagesData = [];
+const addReactions = (messages) => {
 
     // console.log(JSON.stringify(messages, null, 2));
 
-    for (let i = 0; i < messages.length; i++) {
-        const message = messages[i];
+    const messagesData = messages.map(message => {
         const reactionsData = {};
         for (let j = 0; j < message.reactions.length; j++) {
             const react = `${message.reactions[j].reaction.unicode}:${message.reactions[j].reaction.name}`
@@ -48,12 +30,12 @@ export const addReactions = (messages) => {
             ...message._doc,
             reactions: reactionsData,
         }
-    }
+    })
 
     return messagesData;
 }
 
-export const populateMessage = (messageQuery) => {
+const populateMessage = (messageQuery) => {
     return messageQuery
         .populate({
             path: "sender",
@@ -118,7 +100,7 @@ export const populateMessage = (messageQuery) => {
         })
 }
 
-export const validatePermission = async (socket, channelId, permission) => {
+const validatePermission = async (socket, channelId, permission) => {
     const channel = await mongoose.channel.findOne({
         channel_id: channelId,
     }).populate({
@@ -140,4 +122,23 @@ export const validatePermission = async (socket, channelId, permission) => {
     }
 
     return true;
+}
+
+export {
+    handleConnection,
+    createMessage,
+    fetchMessages,
+    deleteMessage,
+    editMessage,
+    reactMessage,
+    readMessage,
+    editPermissions,
+    pinMessage,
+    unpinMessage,
+    sendNotification,
+    addPinnedChat,
+    removePinnedChat,
+    addReactions,
+    populateMessage,
+    validatePermission,
 }

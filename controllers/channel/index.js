@@ -11,11 +11,12 @@ import getMembers from "./getMembers.js";
 import toggleArchiveChannel from "./toggleArchiveChannel.js";
 import getOrgChannels from "./getOrgChannels.js";
 
-export default {
+import mongoose from "../../init/mongoose.js";
+
+export {
     createChannel,
     editChannel,
     editPermissions,
-    createChannel,
     addMembers,
     removeMember,
     joinChannel,
@@ -28,9 +29,7 @@ export default {
 }
 
 export const validatePermission = async (req, res, channelId, permission) => {
-    const channel = await mongoose.channel.findOne({
-        channel_id: channelId,
-    }).populate({
+    const channel = await mongoose.channel.findById(channelId).populate({
         path: "members.user",
         select: {
             user_id: 1,
@@ -43,7 +42,10 @@ export const validatePermission = async (req, res, channelId, permission) => {
 
     const member = channel.members.find(member => member.user.user_id === req.userId);
 
+    console.log("MEMBER", member);
+
     if (channel.permissions.find(permission => permission.role === member.role).permissions[permission] === false) {
+        console.log("NOT ALLOWED");
         res.code(403).send({ message: "You are not authorized to perform this action" });
         return false;
     }

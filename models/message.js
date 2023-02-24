@@ -17,6 +17,10 @@ const messageSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
     },
+    channel: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Channel",
+    },
     content: {
         type: String,
     },

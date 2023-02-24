@@ -3,36 +3,36 @@ import bcrypt from "bcrypt";
 
 export default async (req, res) => {
     const { currentPassword, newPassword } = req.body;
-    if (!newPassword || !currentPassword) {
-        return res.code(400).send({ message: "Current Password and new password are required" });
-    }
 
-    const user = await prisma.user.findUnique({
-        where: {
-            id: req.userId,
-        },
-    })
+    try {
 
-    if (!user) {
-        return res.code(401).send({ message: "User does not exist" });
-    }
+        const user = await prisma.user.findUnique({
+            where: {
+                id: req.userId,
+            },
+        })
 
-    const isPasswordCorrect = await bcrypt.compare(currentPassword, user.password);
-    if (!isPasswordCorrect) {
-        return res.code(401).send({ message: "Incorrect password" });
-    }
+        const isPasswordCorrect = await bcrypt.compare(currentPassword, user.password);
+        if (!isPasswordCorrect) {
+            return res.code(401).send({ message: "Incorrect password" });
+        }
 
-    const encryptedPassword = await bcrypt.hash(newPassword, bcrypt.genSaltSync(10));
+        const encryptedPassword = await bcrypt.hash(newPassword, bcrypt.genSaltSync(10));
 
-    await prisma.user.update({
-        where: {
-            id: user.id,
-        },
-        data: {
-            password: encryptedPassword,
-        },
-    })
+        await prisma.user.update({
+            where: {
+                id: user.id,
+            },
+            data: {
+                password: encryptedPassword,
+            },
+        })
     
-    return res.code(200).send({ message: "Password updated successfully" });
+        return res.code(200).send({ message: "Password updated successfully" });
+    }
+    catch (error) {
+        console.log("[ERROR]", error.message);
+        return res.code(500).send({ message: error.message });
+    }
 
 }

@@ -1,20 +1,18 @@
-import organizationControllers from "../controllers/organization/index.js";
 import auth from "../middlewares/auth.js"
 
-const {
+import {
     createOrganization,
     createInvitation,
     getInvitation,
     updateOrganization,
     deleteOrganization,
-    checkOrganization,
     getMembers,
     getUserOrganizations,
     joinOrganization,
     setDefaultOrganization,
     getDefaultOrg,
     getMember
-} = organizationControllers;
+} from "../controllers/organization/index.js"
 
 export default async (fastify, opts, done) => {
     fastify.post("/create", { preHandler: [auth], handler: createOrganization });
@@ -22,7 +20,6 @@ export default async (fastify, opts, done) => {
     fastify.get("/invite/:invitation_id", { handler: getInvitation });
     fastify.post("/update/:id", { preHandler: [auth], handler: updateOrganization });
     fastify.delete("/delete/:id", { preHandler: [auth], handler: deleteOrganization });
-    fastify.post("/check", { handler: checkOrganization });
     fastify.post("/members", { preHandler: [auth], handler: getMembers });
     fastify.get('/user-organizations', { preHandler: [auth], handler: getUserOrganizations })
     fastify.post('/set-default', { preHandler: [auth], handler: setDefaultOrganization })
