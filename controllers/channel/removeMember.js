@@ -2,25 +2,28 @@ import mongoose from "../../init/mongoose.js";
 import { conn } from "../../init/mongodb.js";
 import { io } from "../../server.js";
 import { validatePermission } from "./index.js";
+import Mongoose from "mongoose";
 
 export default async (req, res) => {
     const { channel_id, user_id } = req.body
-    const channelExists = await mongoose.channel.exists({
+    const channel = await mongoose.channel.findOne({
         _id: channel_id,
     })
-    if (!channelExists) {
+    if (!channel) {
         return res.code(404).send({ message: "Channel not found" });
     }
 
     // console.log(JSON.stringify(channel, null, 2));
 
-    if (!validatePermission(req, res, channel_id, "remove_participants")) {
+    if (!validatePermission(req, res, new Mongoose.Types.ObjectId(channel_id), "remove_participants")) {
         return;
     }
 
-    const sender = await mongoose.user.findOne({
-        user_id: req.userId,
-    })
+    console.log("USER ID", user_id);
+
+    // const user = await mongoose.user.findOne({
+    //     user_id,
+    // })
 
     const session = await conn.startSession();
 
@@ -28,41 +31,35 @@ export default async (req, res) => {
 
         session.startTransaction();
 
-        mongoose.channel.updateOne({
-            _id: channel_id,
-        }, {
+        await mongoose.channel.findByIdAndUpdate(channel_id, {
             $pull: {
                 members: {
-                    $elemMatch: {
-                        user: {
-                            user_id
-                        }
-                    }
+                    user: Mongoose.Types.ObjectId(user_id)
                 }
             }
         }, { session })
 
-        mongoose.message.create({
-            content: `${req.userId} have added ${user_id}`,
-            chat_id: channel_id,
-            is_private: false,
-            is_notification: true,
-            sender
-        }, { session })
+        // mongoose.message.create({
+        //     content: `${req.userId} have added ${user_id}`,
+        //     chat_id: channel_id,
+        //     is_private: false,
+        //     is_notification: true,
+        //     sender,
+        //     channel,
+        //     organization_id: channel.organization_id,
+        // }, { session })
 
-        mongoose.user.updateOne({ user_id: user_id }, {
+        await mongoose.user.updateOne({ user_id: user_id }, {
             $pull: {
                 chat_rooms: {
-                    $elemMatch: {
-                        chat_id: channel_id
-                    }
+                    chat_id: channel_id
                 }
             }
         }, { session })
 
         await session.commitTransaction();
 
-        io.to(channel_id).emit("member-removed", message)
+        // io.to(channel_id).emit("member-removed", message)
 
         res.code(200).send({ message: "User removed successfully" });
     }

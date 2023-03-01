@@ -2,7 +2,7 @@ import mongoose from "../../init/mongoose.js";
 import prisma from "../../init/prisma.js";
 
 export default async (req, res) => {
-    const { organization_id, query = "" } = req.body;
+    const { organization_id, query = "", excludeMembers = [] } = req.body;
     try {
         const members = await prisma.userOrganizations.findMany({
             where: {
@@ -11,6 +11,9 @@ export default async (req, res) => {
                     email: {
                         contains: query,
                     }
+                },
+                user_id: {
+                    notIn: excludeMembers
                 }
             },
             include: {
@@ -30,17 +33,17 @@ export default async (req, res) => {
                         {
                             first_name: true,
                             last_name: true,
-                            mini_avatar_url: true,
+                            image_url: true,
                             user_id: true,
                         }
                     );
                     return {
                         id: member.user.id,
                         email: member.user.email,
-                        profile: {
+                        user: {
                             first_name: profile.first_name,
                             last_name: profile.last_name,
-                            mini_avatar_url: profile.mini_avatar_url,
+                            image_url: profile.image_url,
                         }
                     }
                 }))

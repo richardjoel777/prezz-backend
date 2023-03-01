@@ -7,14 +7,14 @@ export default async (req, res) => {
     try {
 
         const channel = await mongoose.channel.findOne({
-            _id: Mongoose.Types.ObjectId(channel_id),
+            _id: new Mongoose.Types.ObjectId(channel_id),
         }).populate("members.user");
 
         if (!channel) {
             return res.code(404).send({ error: "Channel not found" });
         }
 
-        if (!validatePermission(req, res, channel_id, "archive_channel")) {
+        if (!validatePermission(req, res, new Mongoose.Types.ObjectId(channel_id), "archive_channel")) {
             return;
         }
 

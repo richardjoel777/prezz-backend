@@ -7,5 +7,5 @@ export {
     starMessage,
     getStarredMessages,
     setOrgId,
-    setChannel
+    setChannel,
 }

@@ -1,6 +1,8 @@
 import mongoose from "mongoose";
 import { uuid } from "uuidv4";
 
+import syncES from "../helpers/syncES.js";
+
 const channelSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -202,6 +204,142 @@ const channelSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+})
+
+channelSchema.post('save', async function (doc) {
+    syncES.add({
+        index: 'channels',
+        id: doc._id,
+        body: {
+            name: doc.name,
+            description: doc.description,
+            image_url: doc.image_url,
+            created_at: doc.created_at,
+            visibility: doc.visibility,
+            type: doc.type,
+            organization_id: doc.organization_id,
+            id: doc._id,
+            members: doc.members.map(member => {
+                return {
+                    user: member.user._id,
+                    role: member.role,
+                }
+            }),
+        },
+        operation: 'create'
+    })
+})
+
+channelSchema.post('update', async function () {
+    const doc = await this.model.findOne(this._conditions)
+    console.log("update", doc)
+    syncES.add({
+        index: 'channels',
+        id: doc._id,
+        body: {
+            name: doc.name,
+            description: doc.description,
+            image_url: doc.image_url,
+            created_at: doc.created_at,
+            visibility: doc.visibility,
+            type: doc.type,
+            organization_id: doc.organization_id,
+            id: doc._id,
+            members: doc.members.map(member => {
+                return {
+                    user: member.user._id,
+                    role: member.role,
+                }
+            }),
+        },
+        operation: 'update'
+    })
+})
+
+channelSchema.post('updateOne', async function () {
+    const doc = await this.model.findOne(this._conditions)
+    console.log("updateOne", doc)
+    syncES.add({
+        index: 'channels',
+        id: doc._id,
+        body: {
+            name: doc.name,
+            description: doc.description,
+            image_url: doc.image_url,
+            created_at: doc.created_at,
+            visibility: doc.visibility,
+            type: doc.type,
+            organization_id: doc.organization_id,
+            id: doc._id,
+            members: doc.members.map(member => {
+                return {
+                    user: member.user._id,
+                    role: member.role,
+                }
+            }),
+        },
+        operation: 'update'
+    })
+})
+
+channelSchema.post('findOneAndUpdate', async function () {
+    const doc = await this.model.findOne(this._conditions)
+    console.log("findOneAndUpdate", doc)
+    syncES.add({
+        index: 'channels',
+        id: doc._id,
+        body: {
+            name: doc.name,
+            description: doc.description,
+            image_url: doc.image_url,
+            created_at: doc.created_at,
+            visibility: doc.visibility,
+            type: doc.type,
+            organization_id: doc.organization_id,
+            id: doc._id,
+            members: doc.members.map(member => {
+                return {
+                    user: member.user._id,
+                    role: member.role,
+                }
+            }),
+        },
+        operation: 'update'
+    })
+})
+
+// channelSchema.post('updateMany', async function (docs) {
+//     docs.forEach(doc => {
+//         syncES.add({
+//             index: 'channels',
+//             id: doc._id,
+//             body: {
+//                 name: doc.name,
+//                 description: doc.description,
+//                 image_url: doc.image_url,
+//                 created_at: doc.created_at,
+//                 visibility: doc.visibility,
+//                 type: doc.type,
+//                 organization_id: doc.organization_id,
+//                 id: doc._id,
+//                 members: doc.members.map(member => {
+//                     return {
+//                         user: member.user._id,
+//                         role: member.role,
+//                     }
+//                 }),
+//             },
+//             operation: 'update'
+//         })
+//     })
+// })
+
+channelSchema.post('remove', async function (doc) {
+    syncES.add({
+        index: 'channels',
+        id: doc._id,
+        operation: 'delete'
+    })
 })
 
 export default mongoose.model("Channel", channelSchema);

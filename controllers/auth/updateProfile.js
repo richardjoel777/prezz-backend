@@ -1,5 +1,5 @@
 import mongoose from "../../init/mongoose.js";
-import prisma from "../../init/prisma.js";
+import redis from "../../init/redis.js";
 import uploadProfilePic from "../../helpers/uploadProfilePic.js";
 
 export default async (req, res) => {
@@ -11,16 +11,15 @@ export default async (req, res) => {
         console.log("[DATA]", data);
 
         if (data.remove_profile_image) {
-            data.mini_avatar_url = `${process.env.ASSESTS_ENDPOINT}/dp_placeholder.png`;
-            data.avatar_url = `${process.env.ASSESTS_ENDPOINT}/dp_placeholder.png`;
+
+            data.image_url = "profile/profile_placeholder.png"
 
             delete data.remove_profile_image
         }
 
         if (req.file) {
             const url = await uploadProfilePic(req.file);
-            data.mini_avatar_url = url;
-            data.avatar_url = url;
+            data.image_url = url;
         }
 
         await mongoose.user.findOneAndUpdate(
@@ -39,6 +38,8 @@ export default async (req, res) => {
             __v: false,
         }
         );
+
+        redis.set(`user:${id}`, JSON.stringify(profile));
 
         return res.code(200).send({ message: "Profile updated", profile });
     } catch (error) {

@@ -1,6 +1,7 @@
 import Joi from "joi";
 import uploadProfilePic from "../../helpers/uploadProfilePic.js";
 import mongoose from "../../init/mongoose.js";
+import Mongoose from 'mongoose'
 import { validatePermission } from "./index.js";
 
 export default async (req, res) => {
@@ -10,7 +11,7 @@ export default async (req, res) => {
 
         const data = JSON.parse(req.body.data);
 
-        if (!validatePermission(req, res, id, "edit_channel_info")) {
+        if (!validatePermission(req, res, new Mongoose.Types.ObjectId(id), "edit_channel_info")) {
             return;
         }
 

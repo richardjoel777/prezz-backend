@@ -1,9 +1,10 @@
 import mongoose from "../../init/mongoose.js";
+import redis from "../../init/redis.js";
 
 export default async (req, res) => {
     try {
 
-        const user = await mongoose.user.findOne({ user_id: req.userId });
+        const user = JSON.parse((await redis.get(`user:${req.userId}`)));
 
         const messages = await mongoose.message.find({
             starred_by: {
@@ -19,7 +20,7 @@ export default async (req, res) => {
                     first_name: 1,
                     last_name: 1,
                     email: 1,
-                    mini_avatar_url: 1,
+                    image_url: 1,
                 }
             })
             .populate({
@@ -29,7 +30,7 @@ export default async (req, res) => {
                     first_name: 1,
                     last_name: 1,
                     email: 1,
-                    mini_avatar_url: 1,
+                    image_url: 1,
                 }
             })
             .populate({

@@ -26,11 +26,6 @@ export default async (req, res) => {
 
         const addMembers = mongoose.channel.updateOne({
             _id: channel_id,
-            members: {
-                user: {
-                    $nin: usersToAdd.map(user => user._id)
-                }
-            }
         }, {
             $push: {
                 members: {
@@ -42,28 +37,31 @@ export default async (req, res) => {
             }
         })
 
-        const sender = await mongoose.user.findOne({
-            user_id: req.userId,
-        });
+        // const sender = await mongoose.user.findOne({
+        //     user_id: req.userId,
+        // });
 
-        const messages = usersToAdd.map(async (user) => {
-            return await mongoose.message.create({
-                content: `${req.userId} have added ${user.user_id}`,
-                chat_id: channel_id,
-                is_private: false,
-                is_notification: true,
-                sender,
-            })
-        })
+        // const messages = usersToAdd.map(async (user) => {
+        //     return await mongoose.message.create({
+        //         content: `${req.userId} have added ${user.user_id}`,
+        //         chat_id: channel_id,
+        //         is_private: false,
+        //         is_notification: true,
+        //         sender,
+        //         organization_id: channel.organization_id,
+        //     })
+        // })
 
         const updateUserChannels = users.map(async (user_id) => {
-            return await mongoose.user.updateOne({
+            const chatRoomExists = await mongoose.user.exists({
                 user_id,
                 chat_rooms: {
-                    chat_id: {
-                        $ne: channel_id
-                    }
+                    chat_id: channel_id,
                 }
+            })
+            if (chatRoomExists) return Promise.resolve();
+            return await mongoose.user.updateOne({
+                user_id,
             }, {
                 $push: {
                     chat_rooms: {
@@ -74,9 +72,9 @@ export default async (req, res) => {
             })
         })
 
-        await Promise.all([addMembers, updateUserChannels, messages])
+        await Promise.all([addMembers, updateUserChannels])
 
-        io.to(channel_id).emit("member-added", messages);
+        // io.to(channel_id).emit("member-added", messages);
 
         return res.code(200).send({ message: "User added successfully" });
     }

@@ -1,11 +1,12 @@
 import mongoose from "../../init/mongoose.js";
 import Joi from "joi";
 import { validatePermission } from "./index.js";
+import Mongoose from 'mongoose'
 
 export default async (req, res) => {
     const { permissions, channel_id } = req.body;
 
-    if (!validatePermission(req, res, channel_id, "edit_channel_info")) {
+    if (!validatePermission(req, res, new Mongoose.Types.ObjectId(channel_id), "edit_channel_info")) {
         return;
     }
 

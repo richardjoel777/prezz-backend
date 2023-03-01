@@ -16,7 +16,7 @@ export default async (socket, io, data) => {
                         first_name: 1,
                         last_name: 1,
                         email: 1,
-                        mini_avatar_url: 1,
+                        image_url: 1,
                     }
                 })
                 .populate({
@@ -26,7 +26,7 @@ export default async (socket, io, data) => {
                         first_name: 1,
                         last_name: 1,
                         email: 1,
-                        mini_avatar_url: 1,
+                        image_url: 1,
                     }
                 })
                 .populate({
@@ -36,7 +36,7 @@ export default async (socket, io, data) => {
                         first_name: 1,
                         last_name: 1,
                         email: 1,
-                        mini_avatar_url: 1,
+                        image_url: 1,
                     }
                 })
                 .populate({

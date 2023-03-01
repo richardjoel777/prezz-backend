@@ -1,11 +1,12 @@
 import mongoose from "../../init/mongoose.js";
 import Mongoose from "mongoose";
+import redis from "../../init/redis.js";
 
 export default async (req, res) => {
     try {
         const { id, type } = req.body;
 
-        const user = await mongoose.user.findOne({ user_id: req.userId });
+        const user = JSON.parse((await redis.get(`user:${req.userId}`)));
 
         const message = await mongoose.message.findOne({
             _id: Mongoose.Types.ObjectId(id),
@@ -52,7 +53,7 @@ export default async (req, res) => {
                         first_name: 1,
                         last_name: 1,
                         email: 1,
-                        mini_avatar_url: 1,
+                        image_url: 1,
                     }
                 })
                 .populate({
@@ -62,7 +63,7 @@ export default async (req, res) => {
                         first_name: 1,
                         last_name: 1,
                         email: 1,
-                        mini_avatar_url: 1,
+                        image_url: 1,
                     }
                 })
                 .populate({
@@ -72,7 +73,7 @@ export default async (req, res) => {
                         first_name: 1,
                         last_name: 1,
                         email: 1,
-                        mini_avatar_url: 1,
+                        image_url: 1,
                     }
                 })
                 .populate({

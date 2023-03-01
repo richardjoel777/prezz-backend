@@ -21,6 +21,9 @@ import getMetrics from './controllers/general/metrics.js'
 import socketMiddleware from "./middlewares/socket.js";
 import socketRoutes from "./routes/socket.js";
 import connectMongodb from "./init/mongodb.js";
+import setImageUrl from "./controllers/general/setImageUrl.js";
+import populator from "./controllers/es/populator.js";
+import setRedis from "./controllers/general/setRedis.js";
 
 const server = fastify({
     logger: true,
@@ -95,7 +98,13 @@ server.get('/', async (request, reply) => {
     return "Server is up and running";
 });
 
+server.get('/api/set-image', setImageUrl)
+
+server.get('/api/populate', populator)
+
 server.get('/api/quote', getDailyQuote);
+
+server.get('/api/set-user', setRedis)
 
 
 

@@ -42,7 +42,7 @@ export default async (req, res) => {
                         {
                             first_name: true,
                             last_name: true,
-                            mini_avatar_url: true,
+                            image_url: true,
                             user_id: true,
                             email: true,
                         }
@@ -50,10 +50,10 @@ export default async (req, res) => {
                     return {
                         id: profile.user_id,
                         email: profile.email,
-                        profile: {
+                        user: {
                             first_name: profile.first_name,
                             last_name: profile.last_name,
-                            mini_avatar_url: profile.mini_avatar_url,
+                            image_url: profile.image_url,
                         }
                     }
                 }

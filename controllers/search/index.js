@@ -1,9 +1,13 @@
 import channel from "./channel.js";
-import media from "./media.js";
+import user from "./user.js";
+import getFreqContacts from "./getFreqContacts.js";
 import message from "./message.js";
+import multiSearch from "./multiSearch.js";
 
 export {
     channel,
-    media,
+    user,
+    getFreqContacts,
     message,
+    multiSearch
 }

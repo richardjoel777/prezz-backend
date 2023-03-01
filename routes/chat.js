@@ -8,7 +8,8 @@ import {
     getPinnedChats,
     getConversations,
     getProfileandLastMessage,
-    getConversationHistory
+    getConversationHistory,
+    getRecentMessages
 } from "../controllers/chats/index.js"
 
 export default async (fastify, opts, done) => {
@@ -20,5 +21,6 @@ export default async (fastify, opts, done) => {
     fastify.post('/conversations', { preHandler: auth, handler: getConversations })
     fastify.post('/get-profile', { preHandler: auth, handler: getProfileandLastMessage })
     fastify.post('/conversation-history', { preHandler: auth, handler: getConversationHistory })
+    fastify.post('/recent-messages', { preHandler: auth, handler: getRecentMessages })
     done();
 }

@@ -19,7 +19,7 @@ CREATE TABLE "Profile" (
     "first_name" TEXT NOT NULL,
     "last_name" TEXT,
     "avatar_url" TEXT,
-    "mini_avatar_url" TEXT,
+    "image_url" TEXT,
     "status" "Status" NOT NULL DEFAULT 'AVAILABLE',
     "phone_work" TEXT,
     "phone_personal" TEXT,

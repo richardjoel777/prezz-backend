@@ -1,4 +1,5 @@
 import mongoose from "../init/mongoose.js"
+import Mongoose from "mongoose"
 import Joi from "joi";
 
 const permissionsSchema = Joi.object({
@@ -31,7 +32,7 @@ export default async (socket, io, data) => {
     try {
         Joi.attempt(permissions, Joi.array().items(permissionsSchema));
 
-        if (!validatePermission(socket, channel_id, "edit_channel_info")) {
+        if (!validatePermission(socket, new Mongoose.Types.ObjectId(channel_id), "edit_channel_info")) {
             return;
         }
 

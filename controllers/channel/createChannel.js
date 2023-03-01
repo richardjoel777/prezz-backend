@@ -3,52 +3,15 @@ import prisma from "../../init/prisma.js";
 import mongoose from "../../init/mongoose.js";
 import { SOCKET_USERS } from "../../server.js";
 import uploadProfilePic from "../../helpers/uploadProfilePic.js";
-
-const organizationSchema = Joi.object({
-    name: Joi.string().required(),
-    organization_id: Joi.string().required(),
-    description: Joi.string(),
-    visibility: Joi.boolean(),
-    type: Joi.string().required(),
-    image_url: Joi.string(),
-    participants_list: Joi.array().items(Joi.string()),
-})
+import redis from "../../init/redis.js";
 
 export default async (req, res) => {
 
     const data = JSON.parse(req.body.data);
 
     try {
-        await Joi.attempt(data, organizationSchema);
-    }
-    catch (err) {
-        return res.code(400).send({ message: err.message });
-    }
 
-    try {
-        const user = await prisma.user.findFirst({
-            where: {
-                id: req.userId,
-            }
-        })
-
-        const userProfile = await mongoose.user.findOne({
-            user_id: req.userId
-        })
-
-        const organization = await prisma.organization.findUnique({
-            where: {
-                id: data.organization_id
-            }
-        })
-
-        if (!organization || !user) {
-            return res.code(404).send({ message: "Organization not found" });
-        }
-
-        if ((data.type === "EXTERNAL" && user.id !== organization.owner_id)) {
-            return res.code(403).send({ message: "You are not authorized to create a channel in this Channel" });
-        }
+        const userProfile = JSON.parse((await redis.get(`user:${req.userId}`)));
 
         const participants_list = data.participants_list || [];
 
@@ -70,6 +33,9 @@ export default async (req, res) => {
             console.log("FILE", req.file);
             channelData.image_url = await uploadProfilePic(req.file);
         }
+        else {
+            channelData.image_url = channelData.type === "PUBLIC" ? "profile/channel_organization_placeholder.jpg" : "profile/channel_personal_placeholder.png";
+        }
 
         const channelDetails = {
             ...channelData,
@@ -86,7 +52,7 @@ export default async (req, res) => {
         const channel = await mongoose.channel.create(channelDetails)
 
         await mongoose.user.updateOne({
-            user_id: user.id
+            user_id: userProfile.user_id
         }, {
             $push: {
                 chat_rooms: {
@@ -96,8 +62,8 @@ export default async (req, res) => {
             }
         })
 
-        if (SOCKET_USERS[user.id]) {
-            SOCKET_USERS[user.id].forEach(socket => {
+        if (SOCKET_USERS[req.userId]) {
+            SOCKET_USERS[req.userId].forEach(socket => {
                 socket.join(channel._id);
             })
         }

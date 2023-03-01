@@ -13,6 +13,7 @@ const mailQueue = new Queue("mail", {
 mailQueue.process(async (job, done) => {
     try {
         const { email, subject, text } = job.data;
+        console.log("[JOB CALLED]", job.data);
         const transporter = nodemailer.createTransport({
             service: "gmail",
             auth: {
@@ -31,8 +32,10 @@ mailQueue.process(async (job, done) => {
         };
 
         await transporter.sendMail(mailOptions);
+        console.log("Email sent to", email);
         done();
     } catch (error) {
+        console.log(error);
         done(error);
     }
 });

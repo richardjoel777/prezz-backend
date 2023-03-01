@@ -15,7 +15,7 @@ export default async (req, res) => {
             select: {
                 first_name: true,
                 last_name: true,
-                mini_avatar_url: true,
+                image_url: true,
             },
             match: {
                 user_id: {

@@ -1,22 +1,26 @@
 import mongoose from "../../init/mongoose.js";
+import Mongoose from 'mongoose';
+import redis from '../../init/redis.js';
 import { validatePermission } from "./index.js";
 
 export default async (req, res) => {
     const { channel_id } = req.body;
 
+    console.log("[LEAVE CHANNEL]", channel_id);
+
     try {
 
-        if (!validatePermission(req, res, channel_id, "leave_channel")) {
+        if (!validatePermission(req, res, new Mongoose.Types.ObjectId(channel_id), "leave_channel")) {
             return;
         }
+
+        const user = JSON.parse((await redis.get(`user:${req.userId}`)));
 
         const memberExists = await mongoose.channel.exists({
             _id: channel_id,
             members: {
                 $elemMatch: {
-                    user: {
-                        user_id: req.userId
-                    }
+                    user: user._id
                 }
             }
         })
@@ -27,17 +31,10 @@ export default async (req, res) => {
             return res.code(400).send({ message: "User is not a member" });
         }
 
-        const userProfile = await mongoose.user.findOne({
-            user_id
-        });
-
-        const removeMember = mongoose.channel.updateOne({
-            _id: channel_id,
-        }, {
+        const removeMember = mongoose.channel.findByIdAndUpdate(channel_id, {
             $pull: {
                 members: {
-                    user: userProfile,
-                    role: "MEMBER"
+                    user: user._id
                 }
             }
         })

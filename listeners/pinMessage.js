@@ -15,7 +15,7 @@ export default async (socket, io, data) => {
         });
 
         if (!message.is_private) {
-            if (!validatePermission(socket, chat_id, "pin_messages")) {
+            if (!validatePermission(socket, new Mongoose.Types.ObjectId(chat_id), "pin_messages")) {
                 return;
             }
         }

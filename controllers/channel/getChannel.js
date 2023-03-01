@@ -31,7 +31,7 @@ export default async (req, res) => {
                 last_name: true,
                 user_id: true,
                 email: true,
-                mini_avatar_url: true,
+                image_url: true,
             },
         });
 

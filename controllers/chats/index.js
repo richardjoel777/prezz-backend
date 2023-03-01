@@ -6,6 +6,7 @@ import getPinnedChats from "./getPinnedChats.js";
 import getConversations from "./getConversations.js";
 import getProfileandLastMessage from "./getProfileandLastMessage.js";
 import getConversationHistory from "./getConversationHistory.js";
+import getRecentMessages from "./getRecentMessages.js";
 
 export {
     getFiles,
@@ -16,4 +17,5 @@ export {
     getConversations,
     getProfileandLastMessage,
     getConversationHistory,
+    getRecentMessages
 };

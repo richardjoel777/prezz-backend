@@ -51,6 +51,8 @@ export const validateLogin = (req, res, next) => {
     if (error) {
         return res.status(400).send({ message: error.details[0].message });
     }
+
+    next();
 }
 
 export const validateRegister = (req, res, next) => {

@@ -10,6 +10,7 @@ import getChannel from "./getChannel.js";
 import getMembers from "./getMembers.js";
 import toggleArchiveChannel from "./toggleArchiveChannel.js";
 import getOrgChannels from "./getOrgChannels.js";
+import getMediaFiles from "./getMediaFiles.js";
 
 import mongoose from "../../init/mongoose.js";
 
@@ -26,6 +27,7 @@ export {
     getMembers,
     toggleArchiveChannel,
     getOrgChannels,
+    getMediaFiles
 }
 
 export const validatePermission = async (req, res, channelId, permission) => {

@@ -1,4 +1,5 @@
 import mongoose from "../../init/mongoose.js";
+import redis from "../../init/redis.js";
 import prisma from "../../init/prisma.js";
 
 export default async (req, res) => {
@@ -11,10 +12,7 @@ export default async (req, res) => {
             return res.code(404).send({ message: "Channel not found" });
         }
 
-        const user = await mongoose.user.findOne({
-            user_id: req.userId,
-        });
-
+        const user = JSON.parse((await redis.get(`user:${req.userId}`)));
         // console.log("[USER]", user)
 
         if (!user) {

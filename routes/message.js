@@ -4,7 +4,7 @@ import {
     starMessage,
     getStarredMessages,
     setOrgId,
-    setChannel
+    setChannel,
 } from '../controllers/message/index.js';
 
 const routes = async (fastify, options, done) => {

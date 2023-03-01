@@ -12,6 +12,8 @@ import sendNotification from "./sendNotification.js"
 import addPinnedChat from "./addPinnedChat.js"
 import removePinnedChat from "./removePinnedChat.js"
 
+import mongoose from "../init/mongoose.js"
+
 const addReactions = (messages) => {
 
     // console.log(JSON.stringify(messages, null, 2));
@@ -26,7 +28,7 @@ const addReactions = (messages) => {
                 reactionsData[react] = [message.reactions[j].user];
             }
         }
-        messagesData[i] = {
+        return {
             ...message._doc,
             reactions: reactionsData,
         }
@@ -44,7 +46,7 @@ const populateMessage = (messageQuery) => {
                 first_name: 1,
                 last_name: 1,
                 email: 1,
-                mini_avatar_url: 1,
+                image_url: 1,
             }
         })
         .populate({
@@ -54,7 +56,15 @@ const populateMessage = (messageQuery) => {
                 first_name: 1,
                 last_name: 1,
                 email: 1,
-                mini_avatar_url: 1,
+                image_url: 1,
+            }
+        })
+        .populate({
+            path: "channel",
+            select: {
+                name: 1,
+                image_url: 1,
+                type: 1,
             }
         })
         .populate({
@@ -64,7 +74,7 @@ const populateMessage = (messageQuery) => {
                 first_name: 1,
                 last_name: 1,
                 email: 1,
-                mini_avatar_url: 1,
+                image_url: 1,
             }
         })
         .populate({

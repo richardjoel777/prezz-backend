@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 
+import syncES from "../helpers/syncES.js";
+
 const userSchema = new mongoose.Schema({
     user_id: {
         type: String,
@@ -15,26 +17,14 @@ const userSchema = new mongoose.Schema({
         type: String,
         default: "",
     },
-    avatar_url: {
+    image_url: {
         type: String,
-        default: `${process.env.ASSESTS_ENDPOINT}/dp_placeholder.png`,
-    },
-    mini_avatar_url: {
-        type: String,
-        default: `${process.env.ASSESTS_ENDPOINT}/dp_placeholder.png`,
+        default: "profile/profile_placeholder.png",
     },
     status: {
         type: String,
         enum: ['AVAILABLE', 'BUSY', 'AWAY', 'INVISIBLE'],
         default: 'AVAILABLE',
-    },
-    avatar_url: {
-        type: String,
-        default: `${process.env.ASSESTS_ENDPOINT}/dp_placeholder.png`,
-    },
-    mini_avatar_url: {
-        type: String,
-        default: `${process.env.ASSESTS_ENDPOINT}/dp_placeholder.png`,
     },
     phone_work: {
         type: String,
@@ -73,16 +63,6 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    // star_messages: {
-    //     type: [{
-    //         message: {
-    //             type: mongoose.Schema.Types.ObjectId,
-    //             ref: "message",
-    //         },
-            
-    //     }],
-    //     default: [],
-    // },
     chat_rooms: {
         type: [{
             chat_id: String,
@@ -122,6 +102,104 @@ const userSchema = new mongoose.Schema({
         default: [],
     },
 });
+
+userSchema.post("save", async function (doc) {
+    console.log("save", doc);
+    syncES.add({
+        index: "users",
+        id: doc._id,
+        body: {
+            user_id: doc.user_id,
+            first_name: doc.first_name,
+            last_name: doc.last_name,
+            image_url: doc.image_url,
+            email: doc.email,
+            id: doc._id,
+        },
+        operation: "create"
+    })
+});
+
+userSchema.post("update", async function () {
+    const doc = await this.model.findOne(this._conditions)
+    console.log("update", doc);
+    syncES.add({
+        index: "users",
+        id: doc._id,
+        body: {
+            user_id: doc.user_id,
+            first_name: doc.first_name,
+            last_name: doc.last_name,
+            image_url: doc.image_url,
+            email: doc.email,
+            id: doc._id,
+        },
+        operation: "update"
+    })
+});
+
+userSchema.post("updateOne", async function () {
+    const doc = await this.model.findOne(this._conditions)
+    console.log("updateOne", doc);
+    syncES.add({
+        index: "users",
+        id: doc._id,
+        body: {
+            user_id: doc.user_id,
+            first_name: doc.first_name,
+            last_name: doc.last_name,
+            image_url: doc.image_url,
+            email: doc.email,
+            id: doc._id,
+        },
+        operation: "update"
+    })
+});
+
+userSchema.post("findOneAndUpdate", async function () {
+    const doc = await this.model.findOne(this._conditions)
+    console.log("findOneAndUpdate", doc);
+    syncES.add({
+        index: "users",
+        id: doc._id,
+        body: {
+            user_id: doc.user_id,
+            first_name: doc.first_name,
+            last_name: doc.last_name,
+            image_url: doc.image_url,
+            email: doc.email,
+            id: doc._id,
+        },
+        operation: "update"
+    })
+});
+
+// userSchema.post("updateMany", async function (docs) {
+//     // console.log("updateMany", docs);
+//     docs.forEach((doc) => {
+//         syncES.add({
+//             index: "users",
+//             id: doc._id,
+//             body: {
+//                 user_id: doc.user_id,
+//                 first_name: doc.first_name,
+//                 last_name: doc.last_name,
+//                 image_url: doc.image_url,
+//                 email: doc.email,
+//                 id: doc._id,
+//             },
+//             operation: "update"
+//         })
+//     })
+// });
+
+// userSchema.post("deleteMany", async function (doc) {
+//     syncES.add({
+//         index: "users",
+//         id: doc._id,
+//         operation: "delete"
+//     })
+// });
 
 const user = mongoose.model("user", userSchema);
 

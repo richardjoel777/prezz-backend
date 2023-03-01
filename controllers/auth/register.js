@@ -2,6 +2,7 @@ import prisma from "../../init/prisma.js";
 import mongoose from "../../init/mongoose.js";
 import bcrypt from "bcrypt";
 import { loginUser } from "./index.js";
+import redis from '../../init/redis.js'
 
 
 export default async (req, res) => {
@@ -43,11 +44,14 @@ export default async (req, res) => {
             },
         })
 
-        await mongoose.user.create({
+        const profile = await mongoose.user.create({
             user_id: user.id,
             first_name: user.email.split("@")[0],
             email: user.email,
+            phone_personal: user.phone,
         })
+
+        await redis.set(`user:${user.id}`, JSON.stringify(profile))
 
         await loginUser(req, res, user.id)
     }

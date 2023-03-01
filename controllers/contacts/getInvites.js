@@ -15,7 +15,7 @@ export default async (req, res) => {
                 user_id: 1,
                 first_name: 1,
                 last_name: 1,
-                mini_avatar_url: 1
+                image_url: 1
             }
         });
 

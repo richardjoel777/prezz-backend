@@ -6,14 +6,14 @@ export default async (req, res) => {
 
         const last_message = await mongoose.message
             .findOne({ chat_id })
-            .sort({ createdAt: -1 })
+            .sort({ created_at: -1 })
             .populate({
                 path: "sender",
                 select: {
                     first_name: 1,
                     last_name: 1,
                     user_id: 1,
-                    mini_avatar_url: 1,
+                    image_url: 1,
                 }
             })
             .select({
@@ -37,7 +37,7 @@ export default async (req, res) => {
                 first_name: 1,
                 last_name: 1,
                 user_id: 1,
-                mini_avatar_url: 1,
+                image_url: 1,
                 country: 1,
                 email: 1,
                 timezone: 1,

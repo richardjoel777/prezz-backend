@@ -16,7 +16,7 @@ export default async (socket, io, data) => {
             })
             .sort({ created_at: -1 })
             .skip(offset)
-            .limit(15))
+            .limit(15));
 
         const messagesData = addReactions(messages);
 

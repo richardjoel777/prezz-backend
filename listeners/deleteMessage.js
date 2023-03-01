@@ -1,4 +1,5 @@
 import mongoose from '../init/mongoose.js';
+import Mongoose from 'mongoose'
 import { populateMessage, validatePermission } from './index.js';
 
 export default async (socket, io, data) => {
@@ -14,12 +15,12 @@ export default async (socket, io, data) => {
 
         if (!message.is_private) {
             if (message.sender.user_id === socket.userId) {
-                if (!validatePermission(socket, message.chat_id, "delete_own_messages")) {
+                if (!validatePermission(socket, new Mongoose.Types.ObjectId(message.chat_id), "delete_own_messages")) {
                     return;
                 }
             }
             else {
-                if (!validatePermission(socket, message.chat_id, "delete_messages")) {
+                if (!validatePermission(socket, new Mongoose.Types.ObjectId(message.chat_id), "delete_messages")) {
                     return;
                 }
             }

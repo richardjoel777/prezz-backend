@@ -7,6 +7,7 @@ import * as channelControllers from '../controllers/channel/index.js';
 const routes = async (fastify, options, done) => {
     // fastify.get('/channels', channelControllers.getChannels);
     // fastify.get('/channel/:id', channelControllers.getChannel);
+    fastify.post("/media", { preHandler: [auth], handler: channelControllers.getMediaFiles });
     fastify.post('/create-channel', { preHandler: [auth, upload.single('file')], handler: channelControllers.createChannel });
     fastify.post('/edit-channel/:id', { preHandler: [auth, upload.single('file')], handler: channelControllers.editChannel });
     fastify.post('/edit-permissions/:id', { preHandler: [auth, validateEditPermissions], handler: channelControllers.editPermissions })

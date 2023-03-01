@@ -7,6 +7,9 @@ export default async (req, res) => {
     try {
         const profile = await mongoose.user.findOne({
             email,
+        }, {
+            chat_rooms: 0,
+            pinned_chats: 0,
         });
         res.code(200).send({ profile });
     }
