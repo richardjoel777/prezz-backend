@@ -103,76 +103,76 @@ const userSchema = new mongoose.Schema({
     },
 });
 
-userSchema.post("save", async function (doc) {
-    console.log("save", doc);
-    syncES.add({
-        index: "users",
-        id: doc._id,
-        body: {
-            user_id: doc.user_id,
-            first_name: doc.first_name,
-            last_name: doc.last_name,
-            image_url: doc.image_url,
-            email: doc.email,
-            id: doc._id,
-        },
-        operation: "create"
-    })
-});
+// userSchema.post("save", async function (doc) {
+//     console.log("save", doc);
+//     syncES.add({
+//         index: "users",
+//         id: doc._id,
+//         body: {
+//             user_id: doc.user_id,
+//             first_name: doc.first_name,
+//             last_name: doc.last_name,
+//             image_url: doc.image_url,
+//             email: doc.email,
+//             id: doc._id,
+//         },
+//         operation: "create"
+//     })
+// });
 
-userSchema.post("update", async function () {
-    const doc = await this.model.findOne(this._conditions)
-    console.log("update", doc);
-    syncES.add({
-        index: "users",
-        id: doc._id,
-        body: {
-            user_id: doc.user_id,
-            first_name: doc.first_name,
-            last_name: doc.last_name,
-            image_url: doc.image_url,
-            email: doc.email,
-            id: doc._id,
-        },
-        operation: "update"
-    })
-});
+// userSchema.post("update", async function () {
+//     const doc = await this.model.findOne(this._conditions)
+//     console.log("update", doc);
+//     syncES.add({
+//         index: "users",
+//         id: doc._id,
+//         body: {
+//             user_id: doc.user_id,
+//             first_name: doc.first_name,
+//             last_name: doc.last_name,
+//             image_url: doc.image_url,
+//             email: doc.email,
+//             id: doc._id,
+//         },
+//         operation: "update"
+//     })
+// });
 
-userSchema.post("updateOne", async function () {
-    const doc = await this.model.findOne(this._conditions)
-    console.log("updateOne", doc);
-    syncES.add({
-        index: "users",
-        id: doc._id,
-        body: {
-            user_id: doc.user_id,
-            first_name: doc.first_name,
-            last_name: doc.last_name,
-            image_url: doc.image_url,
-            email: doc.email,
-            id: doc._id,
-        },
-        operation: "update"
-    })
-});
+// userSchema.post("updateOne", async function () {
+//     const doc = await this.model.findOne(this._conditions)
+//     console.log("updateOne", doc);
+//     syncES.add({
+//         index: "users",
+//         id: doc._id,
+//         body: {
+//             user_id: doc.user_id,
+//             first_name: doc.first_name,
+//             last_name: doc.last_name,
+//             image_url: doc.image_url,
+//             email: doc.email,
+//             id: doc._id,
+//         },
+//         operation: "update"
+//     })
+// });
 
-userSchema.post("findOneAndUpdate", async function () {
-    const doc = await this.model.findOne(this._conditions)
-    console.log("findOneAndUpdate", doc);
-    syncES.add({
-        index: "users",
-        id: doc._id,
-        body: {
-            user_id: doc.user_id,
-            first_name: doc.first_name,
-            last_name: doc.last_name,
-            image_url: doc.image_url,
-            email: doc.email,
-            id: doc._id,
-        },
-        operation: "update"
-    })
-});
+// userSchema.post("findOneAndUpdate", async function () {
+//     const doc = await this.model.findOne(this._conditions)
+//     console.log("findOneAndUpdate", doc);
+//     syncES.add({
+//         index: "users",
+//         id: doc._id,
+//         body: {
+//             user_id: doc.user_id,
+//             first_name: doc.first_name,
+//             last_name: doc.last_name,
+//             image_url: doc.image_url,
+//             email: doc.email,
+//             id: doc._id,
+//         },
+//         operation: "update"
+//     })
+// });
 
 // userSchema.post("updateMany", async function (docs) {
 //     // console.log("updateMany", docs);

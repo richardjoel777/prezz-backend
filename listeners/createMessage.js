@@ -9,7 +9,7 @@ import { validatePermission } from "./index.js"
 export default async (socket, io, data) => {
     const { content = "", is_private, organization_id, reply_to = "" } = data;
 
-    // console.log('[DATA]', data);
+    console.log('[DATA]', data);
 
     try {
 
