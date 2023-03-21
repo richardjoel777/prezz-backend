@@ -28,6 +28,7 @@
     "bcrypt": "^5.1.0",
     "bull": "^4.10.2",
     "cron": "^2.2.0",
+    "dotenv": "^16.0.3",
     "fastify": "^4.11.0",
     "fastify-multer": "^2.0.3",
     "fastify-socket.io": "^4.0.0",
